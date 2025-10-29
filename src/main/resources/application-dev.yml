@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fitness_tracker_db
+    username: fitness
+    password: fitness
