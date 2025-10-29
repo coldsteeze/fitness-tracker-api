@@ -7,3 +7,5 @@ spring:
 jwt:
   secret: SECRET
   issuer: com.fitness.tracker
+  access-token-expiration-minutes: 15
+  refresh-token-expiration-hours: 1
