@@ -3,3 +3,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/fitness_tracker_db
     username: fitness
     password: fitness
+
+jwt:
+  secret: SECRET
+  issuer: com.fitness.tracker
