@@ -6,9 +6,9 @@ import com.fitness.tracker.fitness_tracker_api.repository.RefreshTokenRepository
 import com.fitness.tracker.fitness_tracker_api.security.JwtProperties;
 import com.fitness.tracker.fitness_tracker_api.security.JwtService;
 import com.fitness.tracker.fitness_tracker_api.service.RefreshTokenService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -38,7 +38,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = RuntimeException.class)
     public RefreshToken rotateRefreshToken(String oldRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(oldRefreshToken)
                 .orElseThrow(() -> new RuntimeException("Refresh token not found"));
