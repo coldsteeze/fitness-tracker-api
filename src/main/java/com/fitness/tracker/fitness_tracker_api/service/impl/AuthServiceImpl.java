@@ -12,7 +12,6 @@ import com.fitness.tracker.fitness_tracker_api.security.JwtService;
 import com.fitness.tracker.fitness_tracker_api.security.UserDetailsImpl;
 import com.fitness.tracker.fitness_tracker_api.service.AuthService;
 import com.fitness.tracker.fitness_tracker_api.service.RefreshTokenService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
