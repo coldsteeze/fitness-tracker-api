@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fitness.tracker.fitness_tracker_api.entity.RefreshToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -67,5 +68,15 @@ public class JwtServiceImpl implements JwtService {
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(expiresAt))
                 .sign(algorithm);
+    }
+
+    @Override
+    public boolean isTokenExpired(RefreshToken refreshToken) {
+        try {
+            verifier.verify(refreshToken.getToken());
+            return false;
+        } catch (JWTVerificationException e) {
+            return true;
+        }
     }
 }

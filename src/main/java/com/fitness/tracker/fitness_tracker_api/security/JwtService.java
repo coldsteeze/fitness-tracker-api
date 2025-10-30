@@ -2,6 +2,7 @@ package com.fitness.tracker.fitness_tracker_api.security;
 
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fitness.tracker.fitness_tracker_api.entity.RefreshToken;
 
 public interface JwtService {
 
@@ -12,4 +13,6 @@ public interface JwtService {
     String generateAccessToken(Long userId, String identifier);
 
     String generateRefreshToken(Long userId, String identifier);
+
+    boolean isTokenExpired(RefreshToken refreshToken);
 }
