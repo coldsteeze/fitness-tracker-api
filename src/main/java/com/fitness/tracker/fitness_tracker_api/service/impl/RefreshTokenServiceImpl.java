@@ -1,5 +1,6 @@
 package com.fitness.tracker.fitness_tracker_api.service.impl;
 
+import com.fitness.tracker.fitness_tracker_api.dto.response.JwtResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.RefreshToken;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
 import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenExpiredException;
@@ -24,22 +25,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    @Transactional
-    public RefreshToken createRefreshToken(User user) {
-        String token = jwtService.generateRefreshToken(user.getId(), user.getUsername());
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
-                .token(token)
-                .expiresAt(Instant.now().plus(Duration.ofHours(jwtProperties.getRefreshTokenExpirationHours())))
-                .build();
-
-        refreshTokenRepository.save(refreshToken);
-
-        return refreshToken;
-    }
-
-    @Override
     @Transactional(noRollbackFor = RefreshTokenExpiredException.class)
     public RefreshToken rotateRefreshToken(String oldRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(oldRefreshToken)
@@ -62,5 +47,28 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token not found"));
 
         refreshTokenRepository.delete(token);
+    }
+
+    @Override
+    @Transactional
+    public JwtResponse generateTokens(User user) {
+        String accessToken = jwtService.generateAccessToken(user.getId(), user.getUsername());
+        String refreshToken = createRefreshToken(user).getToken();
+
+        return new JwtResponse(accessToken, refreshToken);
+    }
+
+    private RefreshToken createRefreshToken(User user) {
+        String token = jwtService.generateRefreshToken(user.getId(), user.getUsername());
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(token)
+                .expiresAt(Instant.now().plus(Duration.ofHours(jwtProperties.getRefreshTokenExpirationHours())))
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
+
+        return refreshToken;
     }
 }

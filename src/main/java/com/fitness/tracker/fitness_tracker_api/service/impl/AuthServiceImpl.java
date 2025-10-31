@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
                 registerRequest.getUsername(),
                 registerRequest.getEmail());
 
-        return generateTokens(user);
+        return refreshTokenService.generateTokens(user);
     }
 
     @Override
@@ -74,14 +74,13 @@ public class AuthServiceImpl implements AuthService {
                             loginRequest.getPassword())
             );
 
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            User user = userDetails.getUser();
+            User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
             user.setLoggedAt(LocalDateTime.now());
             userRepository.save(user);
 
             log.info("User logged in: userId={}, email={}", user.getId(), user.getEmail());
 
-            return generateTokens(user);
+            return refreshTokenService.generateTokens(user);
         } catch (BadCredentialsException e) {
             log.warn("Invalid login attempt for identifier: {}", loginRequest.getIdentifier());
             throw new InvalidCredentialsException("Invalid identifier or password");
@@ -103,12 +102,5 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
-    }
-
-    private JwtResponse generateTokens(User user) {
-        String accessToken = jwtService.generateAccessToken(user.getId(), user.getUsername());
-        String refreshToken = refreshTokenService.createRefreshToken(user).getToken();
-
-        return new JwtResponse(accessToken, refreshToken);
     }
 }
