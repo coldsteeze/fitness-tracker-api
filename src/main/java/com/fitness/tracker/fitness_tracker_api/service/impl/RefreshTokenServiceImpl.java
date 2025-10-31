@@ -10,6 +10,7 @@ import com.fitness.tracker.fitness_tracker_api.security.JwtProperties;
 import com.fitness.tracker.fitness_tracker_api.security.JwtService;
 import com.fitness.tracker.fitness_tracker_api.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final JwtService jwtService;
@@ -36,6 +38,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
 
         refreshTokenRepository.delete(refreshToken);
+        log.info("Refresh token rotated for userId={}", refreshToken.getUser().getId());
 
         return createRefreshToken(refreshToken.getUser());
     }
@@ -47,6 +50,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token not found"));
 
         refreshTokenRepository.delete(token);
+        log.info("Refresh token deleted: {}", refreshToken);
     }
 
     @Override
@@ -68,6 +72,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+        log.info("Refresh token created for userId={}", user.getId());
 
         return refreshToken;
     }
