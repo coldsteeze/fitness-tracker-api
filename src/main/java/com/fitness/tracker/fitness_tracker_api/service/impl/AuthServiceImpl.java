@@ -6,6 +6,10 @@ import com.fitness.tracker.fitness_tracker_api.dto.request.RegisterRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.JwtResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.RefreshToken;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
+import com.fitness.tracker.fitness_tracker_api.exception.auth.AuthenticationProcessingException;
+import com.fitness.tracker.fitness_tracker_api.exception.auth.EmailAlreadyExistsException;
+import com.fitness.tracker.fitness_tracker_api.exception.auth.InvalidCredentialsException;
+import com.fitness.tracker.fitness_tracker_api.exception.auth.UsernameAlreadyExistsException;
 import com.fitness.tracker.fitness_tracker_api.mapper.UserMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.UserRepository;
 import com.fitness.tracker.fitness_tracker_api.security.JwtService;
@@ -36,18 +40,17 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
 
-
     @Override
     @Transactional
     public JwtResponse register(RegisterRequest registerRequest) {
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             log.warn("Registration failed: username {} is already taken", registerRequest.getUsername());
-            throw new RuntimeException("Registration failed: username is already taken");
+            throw new UsernameAlreadyExistsException("Registration failed: username is already taken");
         }
 
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             log.warn("Registration failed: email {} is already taken", registerRequest.getEmail());
-            throw new RuntimeException("Registration failed: email is already taken");
+            throw new EmailAlreadyExistsException("Registration failed: email is already taken");
         }
 
         User user = userMapper.toEntity(registerRequest);
@@ -81,10 +84,10 @@ public class AuthServiceImpl implements AuthService {
             return generateTokens(user);
         } catch (BadCredentialsException e) {
             log.warn("Invalid login attempt for identifier: {}", loginRequest.getIdentifier());
-            throw new RuntimeException("Invalid identifier or password");
+            throw new InvalidCredentialsException("Invalid identifier or password");
         } catch (Exception e) {
             log.error("Unexpected login error for identifier: {}", loginRequest.getIdentifier(), e);
-            throw new RuntimeException("Login failed", e);
+            throw new AuthenticationProcessingException("Unexpected login error: ", e);
         }
     }
 
