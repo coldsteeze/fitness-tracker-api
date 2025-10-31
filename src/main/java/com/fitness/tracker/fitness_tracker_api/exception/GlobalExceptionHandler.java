@@ -1,9 +1,13 @@
 package com.fitness.tracker.fitness_tracker_api.exception;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.AuthenticationProcessingException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.EmailAlreadyExistsException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.InvalidCredentialsException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.UsernameAlreadyExistsException;
+import com.fitness.tracker.fitness_tracker_api.exception.token.InvalidRefreshTokenException;
+import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenExpiredException;
+import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,6 +40,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleAuthProcessing(Exception ex, HttpServletRequest request) {
         log.error("Unexpected error", ex);
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex, request);
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<ApiError> handleRefreshTokenNotFound(RefreshTokenNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex, request);
+    }
+
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<ApiError> handleRefreshTokenExpired(RefreshTokenExpiredException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex, request);
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<ApiError> handleInvalidRefresh(InvalidRefreshTokenException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex, request);
+    }
+
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<ApiError> handleJwtVerification(HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, new InvalidRefreshTokenException("Invalid or expired refresh token"), request);
     }
 
     private ResponseEntity<ApiError> buildErrorResponse(HttpStatus status, Exception ex, HttpServletRequest request) {
