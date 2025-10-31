@@ -2,6 +2,8 @@ package com.fitness.tracker.fitness_tracker_api.service.impl;
 
 import com.fitness.tracker.fitness_tracker_api.entity.RefreshToken;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
+import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenExpiredException;
+import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenNotFoundException;
 import com.fitness.tracker.fitness_tracker_api.repository.RefreshTokenRepository;
 import com.fitness.tracker.fitness_tracker_api.security.JwtProperties;
 import com.fitness.tracker.fitness_tracker_api.security.JwtService;
@@ -38,14 +40,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional(noRollbackFor = RuntimeException.class)
+    @Transactional(noRollbackFor = RefreshTokenExpiredException.class)
     public RefreshToken rotateRefreshToken(String oldRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(oldRefreshToken)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token not found"));
 
         if (jwtService.isTokenExpired(refreshToken)) {
             refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("Refresh token is expired");
+            throw new RefreshTokenExpiredException("Refresh token is expired");
         }
 
         refreshTokenRepository.delete(refreshToken);
@@ -57,7 +59,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional
     public void deleteRefreshToken(String refreshToken) {
         RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token not found"));
 
         refreshTokenRepository.delete(token);
     }
