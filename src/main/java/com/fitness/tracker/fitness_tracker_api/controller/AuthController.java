@@ -1,5 +1,6 @@
 package com.fitness.tracker.fitness_tracker_api.controller;
 
+import com.fitness.tracker.fitness_tracker_api.docs.AuthControllerDocs;
 import com.fitness.tracker.fitness_tracker_api.dto.request.LoginRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.request.RefreshTokenRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.request.RegisterRequest;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
     private final AuthService authService;
 
@@ -45,4 +46,3 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 }
-
