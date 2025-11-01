@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @Setter
 public class User {
 
-    @Column(name = "id", nullable = false, updatable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
