@@ -11,8 +11,8 @@ import com.fitness.tracker.fitness_tracker_api.exception.auth.InvalidCredentials
 import com.fitness.tracker.fitness_tracker_api.exception.auth.UsernameAlreadyExistsException;
 import com.fitness.tracker.fitness_tracker_api.mapper.UserMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.UserRepository;
-import com.fitness.tracker.fitness_tracker_api.security.JwtService;
-import com.fitness.tracker.fitness_tracker_api.security.UserDetailsImpl;
+import com.fitness.tracker.fitness_tracker_api.security.jwt.JwtService;
+import com.fitness.tracker.fitness_tracker_api.security.user.UserDetailsImpl;
 import com.fitness.tracker.fitness_tracker_api.service.RefreshTokenService;
 import com.fitness.tracker.fitness_tracker_api.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.fitness.tracker.fitness_tracker_api.security;
+package com.fitness.tracker.fitness_tracker_api.security.user;
 
 import com.fitness.tracker.fitness_tracker_api.entity.User;
 import lombok.Getter;

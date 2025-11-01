@@ -1,5 +1,6 @@
-package com.fitness.tracker.fitness_tracker_api.security;
+package com.fitness.tracker.fitness_tracker_api.security.config;
 
+import com.fitness.tracker.fitness_tracker_api.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

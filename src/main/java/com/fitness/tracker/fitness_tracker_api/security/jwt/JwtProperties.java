@@ -1,4 +1,4 @@
-package com.fitness.tracker.fitness_tracker_api.security;
+package com.fitness.tracker.fitness_tracker_api.security.jwt;
 
 
 import lombok.Getter;

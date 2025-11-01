@@ -1,6 +1,7 @@
-package com.fitness.tracker.fitness_tracker_api.security;
+package com.fitness.tracker.fitness_tracker_api.security.user.impl;
 
 import com.fitness.tracker.fitness_tracker_api.repository.UserRepository;
+import com.fitness.tracker.fitness_tracker_api.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
