@@ -6,6 +6,7 @@ import com.fitness.tracker.fitness_tracker_api.dto.response.WorkoutResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
 import com.fitness.tracker.fitness_tracker_api.entity.Workout;
 import com.fitness.tracker.fitness_tracker_api.entity.enums.WorkoutType;
+import com.fitness.tracker.fitness_tracker_api.exception.workout.WorkoutNotFoundException;
 import com.fitness.tracker.fitness_tracker_api.mapper.WorkoutMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.WorkoutRepository;
 import com.fitness.tracker.fitness_tracker_api.service.WorkoutService;
@@ -31,7 +32,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Transactional(readOnly = true)
     public WorkoutResponse findById(Long id, User user) {
         Workout workout = workoutRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Workout with this id not found"));
+                .orElseThrow(() -> new WorkoutNotFoundException("Workout with this id not found"));
 
         return workoutMapper.toDto(workout);
     }
@@ -51,7 +52,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Transactional
     public WorkoutResponse updateWorkout(Long id, WorkoutRequest workoutRequest, User user) {
         Workout workout = workoutRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Workout with this id not found"));
+                .orElseThrow(() -> new WorkoutNotFoundException("Workout with this id not found"));
 
         workoutMapper.updateEntityFromDto(workout, workoutRequest);
         workoutRepository.save(workout);
@@ -64,7 +65,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Transactional
     public void deleteWorkout(Long id, User user) {
         Workout workout = workoutRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Workout with this id not found"));
+                .orElseThrow(() -> new WorkoutNotFoundException("Workout with this id not found"));
 
         workoutRepository.delete(workout);
         log.info("Workout deleted successfully: userId: {}, workoutId: {}", user.getId(), workout.getId());
