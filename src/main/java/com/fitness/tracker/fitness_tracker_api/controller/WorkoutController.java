@@ -1,5 +1,6 @@
 package com.fitness.tracker.fitness_tracker_api.controller;
 
+import com.fitness.tracker.fitness_tracker_api.docs.WorkoutControllerDocs;
 import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.PagedResponse;
 import com.fitness.tracker.fitness_tracker_api.dto.response.WorkoutResponse;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/workouts")
-public class WorkoutController {
+public class WorkoutController implements WorkoutControllerDocs {
 
     private final WorkoutService workoutService;
 
