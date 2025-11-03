@@ -2,6 +2,10 @@ package com.fitness.tracker.fitness_tracker_api.security.jwt;
 
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fitness.tracker.fitness_tracker_api.exception.ApiError;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Component
@@ -37,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             try {
                 if (!jwtService.isAccessToken(jwt)) {
-                    sendUnauthorized(response, "Invalid token type");
+                    sendUnauthorized(response, request, "Invalid token type");
                     return;
                 }
 
@@ -56,10 +61,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
             } catch (JWTVerificationException e) {
-                sendUnauthorized(response, "Invalid or expired JWT: " + e.getMessage());
+                sendUnauthorized(response, request, "Invalid or expired JWT");
                 return;
             } catch (Exception e) {
-                sendUnauthorized(response, "Authentication error: " + e.getMessage());
+                sendUnauthorized(response, request, "Authentication error");
                 return;
             }
         }
@@ -67,7 +72,26 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
+    private void sendUnauthorized(HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String path = request.getRequestURI();
+
+        ApiError error = ApiError.builder()
+                .status(HttpServletResponse.SC_UNAUTHORIZED)
+                .error("Unauthorized")
+                .message(message)
+                .path(path)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        response.getWriter().write(mapper.writeValueAsString(error));
     }
 }
+
