@@ -31,8 +31,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     @Transactional(readOnly = true)
     public WorkoutResponse findById(Long id, User user) {
-        Workout workout = workoutRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new WorkoutNotFoundException("Workout with this id not found"));
+        Workout workout = getWorkout(id, user);
 
         return workoutMapper.toDto(workout);
     }
@@ -51,8 +50,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     @Transactional
     public WorkoutResponse updateWorkout(Long id, WorkoutRequest workoutRequest, User user) {
-        Workout workout = workoutRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new WorkoutNotFoundException("Workout with this id not found"));
+        Workout workout = getWorkout(id, user);
 
         workoutMapper.updateEntityFromDto(workout, workoutRequest);
         workoutRepository.save(workout);
@@ -64,8 +62,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     @Transactional
     public void deleteWorkout(Long id, User user) {
-        Workout workout = workoutRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new WorkoutNotFoundException("Workout with this id not found"));
+        Workout workout = getWorkout(id, user);
 
         workoutRepository.delete(workout);
         log.info("Workout deleted successfully: userId: {}, workoutId: {}", user.getId(), workout.getId());
@@ -115,5 +112,10 @@ public class WorkoutServiceImpl implements WorkoutService {
                 page.getTotalElements(),
                 page.getTotalPages()
         );
+    }
+
+    private Workout getWorkout(Long id, User user) {
+        return workoutRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new WorkoutNotFoundException(id));
     }
 }
