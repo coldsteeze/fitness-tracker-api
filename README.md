@@ -53,8 +53,8 @@ http://localhost:8080
 
 PostgreSQL credentials (auto-created):
 
-* User: `fitness_username`
-* Password: `fitness_password`
+* User: `fitness`
+* Password: `fitness`
 * Database: `fitness_tracker_db`
 
 > Note: The `prod` profile is set up for Docker. Running without Docker requires updating the configuration and connecting to a PostgreSQL database manually.
