@@ -5,6 +5,9 @@ import com.fitness.tracker.fitness_tracker_api.exception.auth.AuthenticationProc
 import com.fitness.tracker.fitness_tracker_api.exception.auth.EmailAlreadyExistsException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.InvalidCredentialsException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.UsernameAlreadyExistsException;
+import com.fitness.tracker.fitness_tracker_api.exception.media.EmptyFileException;
+import com.fitness.tracker.fitness_tracker_api.exception.media.MediaPhotoAccessDeniedException;
+import com.fitness.tracker.fitness_tracker_api.exception.media.MediaPhotoNotFoundException;
 import com.fitness.tracker.fitness_tracker_api.exception.token.InvalidRefreshTokenException;
 import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenExpiredException;
 import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenNotFoundException;
@@ -78,6 +81,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(WorkoutNotFoundException.class)
     public ResponseEntity<ApiError> handleWorkoutNotFound(WorkoutNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex, request);
+    }
+
+    @ExceptionHandler(EmptyFileException.class)
+    public ResponseEntity<ApiError> handleEmptyFile(EmptyFileException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex, request);
+    }
+
+    @ExceptionHandler(MediaPhotoAccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDenied(MediaPhotoAccessDeniedException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex, request);
+    }
+
+    @ExceptionHandler(MediaPhotoNotFoundException.class)
+    public ResponseEntity<ApiError> handleMediaPhotoNotFound(MediaPhotoNotFoundException ex, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex, request);
     }
 
