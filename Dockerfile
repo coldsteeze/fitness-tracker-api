@@ -1,11 +1,11 @@
-FROM eclipse-temurin:17-jdk AS build
+FROM maven:3.9.1-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY pom.xml mvnw ./
+COPY pom.xml .
 COPY .mvn .mvn
 COPY src src
 
-RUN ./mvnw clean package
+RUN mvn clean package
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
