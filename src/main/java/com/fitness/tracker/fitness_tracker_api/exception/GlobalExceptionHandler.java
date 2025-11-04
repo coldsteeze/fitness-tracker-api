@@ -8,6 +8,7 @@ import com.fitness.tracker.fitness_tracker_api.exception.auth.UsernameAlreadyExi
 import com.fitness.tracker.fitness_tracker_api.exception.token.InvalidRefreshTokenException;
 import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenExpiredException;
 import com.fitness.tracker.fitness_tracker_api.exception.token.RefreshTokenNotFoundException;
+import com.fitness.tracker.fitness_tracker_api.exception.workout.WorkoutNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -73,6 +74,11 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
 
         return buildErrorResponse(HttpStatus.BAD_REQUEST, new RuntimeException(message), request);
+    }
+
+    @ExceptionHandler(WorkoutNotFoundException.class)
+    public ResponseEntity<ApiError> handleWorkoutNotFound(WorkoutNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex, request);
     }
 
     private ResponseEntity<ApiError> buildErrorResponse(HttpStatus status, Exception ex, HttpServletRequest request) {

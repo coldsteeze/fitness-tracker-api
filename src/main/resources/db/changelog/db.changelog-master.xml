@@ -8,4 +8,5 @@
 
     <include file="db/changelog/changes/001_create_users_table.xml"/>
     <include file="db/changelog/changes/002_create_refresh_tokens_table.xml"/>
+    <include file="db/changelog/changes/003_create_workouts_table.xml"/>
 </databaseChangeLog>
