@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://fitness_postgres:5432/fitness_tracker_db
+    username: fitness
+    password: fitness
+
+jwt:
+  secret: SECRET
+  issuer: com.fitness.tracker
+  access-token-expiration-minutes: 20
+  refresh-token-expiration-hours: 1

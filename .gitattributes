@@ -1,0 +1,14 @@
+* text=auto
+
+*.java text
+*.properties text
+*.yml text
+*.md text
+Dockerfile text
+docker-compose.yml text
+
+mvnw text
+mvnw.cmd text
+
+.mvn/wrapper/maven-wrapper.jar binary
+.mvn/wrapper/maven-wrapper.properties text
