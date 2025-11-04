@@ -18,7 +18,6 @@ public class MediaPhoto {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Lob
     @Column(name = "data", nullable = false)
     private byte[] data;
 
