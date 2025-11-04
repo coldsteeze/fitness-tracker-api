@@ -1,5 +1,7 @@
 package com.fitness.tracker.fitness_tracker_api.controller;
 
+import com.fitness.tracker.fitness_tracker_api.docs.MediaPhotoControllerDocs;
+import com.fitness.tracker.fitness_tracker_api.dto.request.MediaPhotoUploadRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.MediaPhotoResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.MediaPhoto;
 import com.fitness.tracker.fitness_tracker_api.security.user.UserDetailsImpl;
@@ -26,14 +28,13 @@ public class MediaPhotoController {
 
     @PostMapping
     public ResponseEntity<MediaPhotoResponse> createMediaPhoto(
-            @RequestParam Long workoutId,
-            @RequestParam MultipartFile file,
+            @ModelAttribute MediaPhotoUploadRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         MediaPhotoResponse mediaResponse = mediaPhotoService.uploadPhoto(
-                workoutId,
+                request.getWorkoutId(),
                 userDetails.getUser(),
-                file.getOriginalFilename(),
-                file.getBytes());
+                request.getFile().getOriginalFilename(),
+                request.getFile().getBytes());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mediaResponse);
     }
