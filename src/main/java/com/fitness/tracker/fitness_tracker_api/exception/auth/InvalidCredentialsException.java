@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.auth;
 
-public class InvalidCredentialsException extends RuntimeException {
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import org.springframework.http.HttpStatus;
+
+public class InvalidCredentialsException extends AppException {
     public InvalidCredentialsException(String message) {
-        super(message);
+        super(message, HttpStatus.UNAUTHORIZED);
     }
 }

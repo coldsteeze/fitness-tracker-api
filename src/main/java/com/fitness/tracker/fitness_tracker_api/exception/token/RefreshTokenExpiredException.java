@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.token;
 
-public class RefreshTokenExpiredException extends RuntimeException {
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import org.springframework.http.HttpStatus;
+
+public class RefreshTokenExpiredException extends AppException {
     public RefreshTokenExpiredException(String message) {
-        super(message);
+        super(message, HttpStatus.UNAUTHORIZED);
     }
 }
