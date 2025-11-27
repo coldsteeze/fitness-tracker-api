@@ -23,9 +23,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(JWTVerificationException.class)
     public ResponseEntity<ApiError> handleJwt(HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Invalid or expired token",
-                request);
+        return buildErrorResponse(
+                ErrorCode.TOKEN_INVALID.status,
+                ErrorCode.TOKEN_INVALID.message,
+                request
+        );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -43,8 +45,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleOther(Throwable ex, HttpServletRequest request) {
         log.error("UNEXPECTED ERROR", ex);
         return buildErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Unexpected server error",
+                ErrorCode.INTERNAL_ERROR.status,
+                ErrorCode.INTERNAL_ERROR.message,
                 request
         );
     }
