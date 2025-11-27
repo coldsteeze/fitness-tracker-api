@@ -4,6 +4,7 @@ import com.fitness.tracker.fitness_tracker_api.dto.response.MediaPhotoResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.MediaPhoto;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
 import com.fitness.tracker.fitness_tracker_api.entity.Workout;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
 import com.fitness.tracker.fitness_tracker_api.exception.media.EmptyFileException;
 import com.fitness.tracker.fitness_tracker_api.exception.media.MediaPhotoAccessDeniedException;
 import com.fitness.tracker.fitness_tracker_api.exception.media.MediaPhotoNotFoundException;
@@ -30,7 +31,7 @@ public class MediaPhotoServiceImpl implements MediaPhotoService {
     @Transactional
     public MediaPhotoResponse uploadPhoto(Long workoutId, User user, String fileName, byte[] data) {
         if (data == null || data.length == 0) {
-            throw new EmptyFileException("File must not be empty");
+            throw new EmptyFileException(ErrorCode.EMPTY_FILE);
         }
 
         Workout workout = workoutRepository.findByIdAndUser(workoutId, user)
@@ -52,11 +53,11 @@ public class MediaPhotoServiceImpl implements MediaPhotoService {
     @Transactional(readOnly = true)
     public MediaPhoto getPhotoById(Long id, User user) {
         MediaPhoto mediaPhoto = mediaPhotoRepository.findById(id)
-                .orElseThrow(() -> new MediaPhotoNotFoundException("Photo not found"));
+                .orElseThrow(() -> new MediaPhotoNotFoundException(ErrorCode.MEDIA_PHOTO_NOT_FOUND));
 
         Workout workout = mediaPhoto.getWorkout();
         if (!workout.getUser().getId().equals(user.getId())) {
-            throw new MediaPhotoAccessDeniedException("You do not have permission to view this photo");
+            throw new MediaPhotoAccessDeniedException(ErrorCode.MEDIA_PHOTO_ACCESS_DENIED);
         }
 
         log.info("Media Photo has been retrieved successfully userId: {}, workoutId: {}",
