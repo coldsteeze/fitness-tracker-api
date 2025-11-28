@@ -54,24 +54,24 @@ public interface AuthControllerDocs {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(value = """
+                                            @ExampleObject(name = "Email exists", value = """
                                                     {
                                                       "status": 409,
                                                       "error": "Conflict",
                                                       "message": "Email already exists",
                                                       "path": "/api/auth/register",
-                                                      "timestamp": "2025-11-01T00:00:00"
+                                                      "timestamp": "2025-01-01T00:00:00Z"
                                                     }
                                                     """),
-                                            @ExampleObject(value = """
-                                            {
-                                              "status": 409,
-                                              "error": "Conflict",
-                                              "message": "Username already exists",
-                                              "path": "/api/auth/register",
-                                              "timestamp": "2025-11-01T00:00:00"
-                                            }
-                                            """)
+                                            @ExampleObject(name = "Username exists", value = """
+                                                    {
+                                                      "status": 409,
+                                                      "error": "Conflict",
+                                                      "message": "Username already exists",
+                                                      "path": "/api/auth/register",
+                                                      "timestamp": "2025-01-01T00:00:00Z"
+                                                    }
+                                                    """)
                                     }
                             )
                     )
