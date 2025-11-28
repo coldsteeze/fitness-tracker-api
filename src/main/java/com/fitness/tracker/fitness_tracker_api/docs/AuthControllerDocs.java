@@ -53,15 +53,26 @@ public interface AuthControllerDocs {
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
-                                    examples = @ExampleObject(value = """
+                                    examples = {
+                                            @ExampleObject(value = """
+                                                    {
+                                                      "status": 409,
+                                                      "error": "Conflict",
+                                                      "message": "Email already exists",
+                                                      "path": "/api/auth/register",
+                                                      "timestamp": "2025-11-01T00:00:00"
+                                                    }
+                                                    """),
+                                            @ExampleObject(value = """
                                             {
                                               "status": 409,
                                               "error": "Conflict",
-                                              "message": "Registration failed: email is already taken",
+                                              "message": "Username already exists",
                                               "path": "/api/auth/register",
                                               "timestamp": "2025-11-01T00:00:00"
                                             }
                                             """)
+                                    }
                             )
                     )
             }
@@ -131,7 +142,7 @@ public interface AuthControllerDocs {
                                             {
                                               "status": 500,
                                               "error": "Internal Server Error",
-                                              "message": "Unexpected login error: null pointer in authentication flow",
+                                              "message": "Unexpected server error",
                                               "path": "/api/auth/login",
                                               "timestamp": "2025-11-01T00:00:00"
                                             }
@@ -190,7 +201,7 @@ public interface AuthControllerDocs {
                                             {
                                               "status": 401,
                                               "error": "Unauthorized",
-                                              "message": "Refresh token is expired",
+                                              "message": "Refresh token expired",
                                               "path": "/api/auth/refresh",
                                               "timestamp": "2025-11-01T00:00:00"
                                             }
