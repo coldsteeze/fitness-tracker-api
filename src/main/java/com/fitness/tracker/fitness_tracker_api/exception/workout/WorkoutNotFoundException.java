@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.workout;
 
-public class WorkoutNotFoundException extends RuntimeException {
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
+
+public class WorkoutNotFoundException extends AppException {
     public WorkoutNotFoundException(Long id) {
-        super("Workout with id " + id + " not found");
+        super(ErrorCode.WORKOUT_NOT_FOUND.format(id), ErrorCode.WORKOUT_NOT_FOUND);
     }
 }

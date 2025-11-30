@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.media;
 
-public class EmptyFileException extends RuntimeException {
-    public EmptyFileException(String message) {
-        super(message);
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
+
+public class EmptyFileException extends AppException {
+    public EmptyFileException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

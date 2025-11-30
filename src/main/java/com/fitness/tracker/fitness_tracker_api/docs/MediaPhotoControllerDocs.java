@@ -50,26 +50,17 @@ public interface MediaPhotoControllerDocs {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized",
+                            description = "Unauthorized (missing, invalid, or expired JWT)",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
+                                            @ExampleObject(name = "Invalid or expired token", value = """
                                                     {
                                                       "status": 401,
                                                       "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
+                                                      "message": "Invalid or expired token",
                                                       "path": "/api/media",
-                                                      "timestamp": "2025-11-04T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
-                                                      "path": "/api/workouts",
                                                       "timestamp": "2025-11-04T00:00:00"
                                                     }
                                                     """)
@@ -115,26 +106,17 @@ public interface MediaPhotoControllerDocs {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized",
+                            description = "Unauthorized (missing, invalid, or expired JWT)",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
+                                            @ExampleObject(name = "Invalid or expired token", value = """
                                                     {
                                                       "status": 401,
                                                       "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
-                                                      "path": "/api/media/1",
-                                                      "timestamp": "2025-11-04T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
-                                                      "path": "/api/media/1",
+                                                      "message": "Invalid or expired token",
+                                                      "path": "/api/media",
                                                       "timestamp": "2025-11-04T00:00:00"
                                                     }
                                                     """)
@@ -151,7 +133,7 @@ public interface MediaPhotoControllerDocs {
                                             {
                                               "status": 403,
                                               "error": "Forbidden",
-                                              "message": "You do not have permission to view this photo",
+                                              "message": "You do not have permission to access this photo",
                                               "path": "/api/media/1",
                                               "timestamp": "2025-11-04T00:00:00"
                                             }
@@ -168,7 +150,7 @@ public interface MediaPhotoControllerDocs {
                                             {
                                               "status": 404,
                                               "error": "Not Found",
-                                              "message": "Photo with id 1 not found",
+                                              "message": "Photo not found",
                                               "path": "/api/media/1",
                                               "timestamp": "2025-11-04T00:00:00"
                                             }

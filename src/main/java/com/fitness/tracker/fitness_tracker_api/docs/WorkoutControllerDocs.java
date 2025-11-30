@@ -61,20 +61,11 @@ public interface WorkoutControllerDocs {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
+                                            @ExampleObject(name = "Invalid or expired token", value = """
                                                     {
                                                       "status": 401,
                                                       "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
-                                                      "path": "/api/workouts/1",
-                                                      "timestamp": "2025-11-03T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
+                                                      "message": "Invalid or expired token",
                                                       "path": "/api/workouts/1",
                                                       "timestamp": "2025-11-03T00:00:00"
                                                     }
@@ -125,20 +116,11 @@ public interface WorkoutControllerDocs {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
+                                            @ExampleObject(name = "Invalid or expired token", value = """
                                                     {
                                                       "status": 401,
                                                       "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
-                                                      "path": "/api/workouts",
-                                                      "timestamp": "2025-11-03T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
+                                                      "message": "Invalid or expired token",
                                                       "path": "/api/workouts",
                                                       "timestamp": "2025-11-03T00:00:00"
                                                     }
@@ -178,7 +160,7 @@ public interface WorkoutControllerDocs {
                                               "status": 400,
                                               "error": "Bad Request",
                                               "message": "duration: Duration must be positive",
-                                              "path": "/api/workouts",
+                                              "path": "/api/workouts/1",
                                               "timestamp": "2025-11-03T00:00:00"
                                             }
                                             """)
@@ -208,21 +190,12 @@ public interface WorkoutControllerDocs {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
+                                            @ExampleObject(name = "Invalid or expired token", value = """
                                                     {
                                                       "status": 401,
                                                       "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
-                                                      "path": "/api/workouts",
-                                                      "timestamp": "2025-11-03T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
-                                                      "path": "/api/workouts",
+                                                      "message": "Invalid or expired token",
+                                                      "path": "/api/workouts/1",
                                                       "timestamp": "2025-11-03T00:00:00"
                                                     }
                                                     """)
@@ -244,63 +217,6 @@ public interface WorkoutControllerDocs {
     );
 
     @Operation(
-            summary = "Delete workout",
-            description = "Delete an existing workout by ID",
-            responses = {
-                    @ApiResponse(responseCode = "204", description = "Workout deleted successfully"),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Workout not found",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class),
-                                    examples = @ExampleObject(value = """
-                                            {
-                                              "status": 404,
-                                              "error": "Not Found",
-                                              "message": "Workout with id 1 not found",
-                                              "path": "/api/workouts/1",
-                                              "timestamp": "2025-11-03T00:00:00"
-                                            }
-                                            """)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized (missing, invalid, or expired JWT)",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ApiError.class),
-                                    examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
-                                                      "path": "/api/workouts",
-                                                      "timestamp": "2025-11-03T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
-                                                      "path": "/api/workouts",
-                                                      "timestamp": "2025-11-03T00:00:00"
-                                                    }
-                                                    """)
-                                    }
-                            )
-                    )
-            }
-    )
-    ResponseEntity<Void> deleteWorkout(
-            @Parameter(description = "Workout ID", example = "1") @PathVariable Long id,
-            UserDetailsImpl userDetails
-    );
-
-    @Operation(
             summary = "List workouts with filters",
             description = "Fetch paginated workouts with optional filters for type, date range, and duration range",
             responses = {
@@ -316,20 +232,11 @@ public interface WorkoutControllerDocs {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ApiError.class),
                                     examples = {
-                                            @ExampleObject(name = "Missing or invalid token", value = """
+                                            @ExampleObject(name = "Invalid or expired token", value = """
                                                     {
                                                       "status": 401,
                                                       "error": "Unauthorized",
-                                                      "message": "Full authentication is required to access this resource",
-                                                      "path": "/api/workouts",
-                                                      "timestamp": "2025-11-03T00:00:00"
-                                                    }
-                                                    """),
-                                            @ExampleObject(name = "Expired JWT", value = """
-                                                    {
-                                                      "status": 401,
-                                                      "error": "Unauthorized",
-                                                      "message": "Invalid or expired JWT",
+                                                      "message": "Invalid or expired token",
                                                       "path": "/api/workouts",
                                                       "timestamp": "2025-11-03T00:00:00"
                                                     }
@@ -347,6 +254,54 @@ public interface WorkoutControllerDocs {
             @Parameter(description = "Maximum duration in minutes") Integer durationEnd,
             @ParameterObject Pageable pageable,
             UserDetailsImpl currentUser
+    );
+
+    @Operation(
+            summary = "Delete workout",
+            description = "Delete an existing workout by ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Workout deleted successfully"),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized (missing, invalid, or expired JWT)",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class),
+                                    examples = {
+                                            @ExampleObject(name = "Invalid or expired token", value = """
+                                                    {
+                                                      "status": 401,
+                                                      "error": "Unauthorized",
+                                                      "message": "Invalid or expired token",
+                                                      "path": "/api/workouts/1",
+                                                      "timestamp": "2025-11-03T00:00:00"
+                                                    }
+                                                    """)
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Workout not found",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                              "status": 404,
+                                              "error": "Not Found",
+                                              "message": "Workout with id 1 not found",
+                                              "path": "/api/workouts/1",
+                                              "timestamp": "2025-11-03T00:00:00"
+                                            }
+                                            """)
+                            )
+                    ),
+            }
+    )
+    ResponseEntity<Void> deleteWorkout(
+            @Parameter(description = "Workout ID", example = "1") @PathVariable Long id,
+            UserDetailsImpl userDetails
     );
 }
 

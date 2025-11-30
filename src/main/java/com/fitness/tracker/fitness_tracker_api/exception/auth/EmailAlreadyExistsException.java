@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.auth;
 
-public class EmailAlreadyExistsException extends RuntimeException {
-    public EmailAlreadyExistsException(String message) {
-        super(message);
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
+
+public class EmailAlreadyExistsException extends AppException {
+    public EmailAlreadyExistsException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
