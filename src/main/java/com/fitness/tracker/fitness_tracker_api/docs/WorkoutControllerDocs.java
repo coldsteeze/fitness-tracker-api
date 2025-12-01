@@ -1,9 +1,9 @@
 package com.fitness.tracker.fitness_tracker_api.docs;
 
+import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutFilterRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.PagedResponse;
 import com.fitness.tracker.fitness_tracker_api.dto.response.WorkoutResponse;
-import com.fitness.tracker.fitness_tracker_api.entity.enums.WorkoutType;
 import com.fitness.tracker.fitness_tracker_api.exception.ApiError;
 import com.fitness.tracker.fitness_tracker_api.security.user.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.time.LocalDate;
 
 @Tag(name = "Workout", description = "Manage user workouts: create, update, delete, list, and filter workouts")
 public interface WorkoutControllerDocs {
@@ -247,11 +245,7 @@ public interface WorkoutControllerDocs {
             }
     )
     ResponseEntity<PagedResponse<WorkoutResponse>> getWorkouts(
-            @Parameter(description = "Workout type filter") WorkoutType type,
-            @Parameter(description = "Start date (yyyy-MM-dd)") LocalDate dateStart,
-            @Parameter(description = "End date (yyyy-MM-dd)") LocalDate dateEnd,
-            @Parameter(description = "Minimum duration in minutes") Integer durationStart,
-            @Parameter(description = "Maximum duration in minutes") Integer durationEnd,
+            @ParameterObject WorkoutFilterRequest workoutFilterRequest,
             @ParameterObject Pageable pageable,
             UserDetailsImpl currentUser
     );
