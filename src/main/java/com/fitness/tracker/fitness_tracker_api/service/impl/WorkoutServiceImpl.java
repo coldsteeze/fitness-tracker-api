@@ -1,11 +1,11 @@
 package com.fitness.tracker.fitness_tracker_api.service.impl;
 
+import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutFilterRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.PagedResponse;
 import com.fitness.tracker.fitness_tracker_api.dto.response.WorkoutResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
 import com.fitness.tracker.fitness_tracker_api.entity.Workout;
-import com.fitness.tracker.fitness_tracker_api.entity.enums.WorkoutType;
 import com.fitness.tracker.fitness_tracker_api.exception.workout.WorkoutNotFoundException;
 import com.fitness.tracker.fitness_tracker_api.mapper.WorkoutMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.WorkoutRepository;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -71,33 +70,25 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     @Transactional(readOnly = true)
     public PagedResponse<WorkoutResponse> findAllWorkouts(
-            WorkoutType type,
-            LocalDate dateStart,
-            LocalDate dateEnd,
-            Integer durationStart,
-            Integer durationEnd,
+            WorkoutFilterRequest workoutFilterRequest,
             Pageable pageable,
             User user) {
 
         log.info("Fetching workouts: userId={}, type={}, start={}, end={}, " +
                         "durationStart={}, durationEnd={}, page={}, size={}, sort={}",
                 user.getId(),
-                type,
-                dateStart,
-                dateEnd,
-                durationStart,
-                durationEnd,
+                workoutFilterRequest.getType(),
+                workoutFilterRequest.getDateStart(),
+                workoutFilterRequest.getDateEnd(),
+                workoutFilterRequest.getDurationStart(),
+                workoutFilterRequest.getDurationEnd(),
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSort());
 
         Page<Workout> page = workoutRepository.findAllByFilters(
                 user,
-                type,
-                dateStart,
-                dateEnd,
-                durationStart,
-                durationEnd,
+                workoutFilterRequest,
                 pageable
         );
 
