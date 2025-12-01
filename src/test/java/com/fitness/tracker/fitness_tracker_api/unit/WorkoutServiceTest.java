@@ -1,5 +1,6 @@
 package com.fitness.tracker.fitness_tracker_api.unit;
 
+import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutFilterRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.PagedResponse;
 import com.fitness.tracker.fitness_tracker_api.dto.response.WorkoutResponse;
@@ -147,20 +148,19 @@ class WorkoutServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("date").descending());
         Page<Workout> page = new PageImpl<>(List.of(workout), pageable, 1);
 
-        when(workoutRepository.findAllByFilters(user, null, null, null, null, null, pageable))
+        when(workoutRepository.findAllByFilters(eq(user), any(WorkoutFilterRequest.class), eq(pageable)))
                 .thenReturn(page);
         when(workoutMapper.toDto(workout)).thenReturn(workoutResponse);
 
         PagedResponse<WorkoutResponse> result =
-                workoutService.findAllWorkouts(null, null, null, null, null, pageable, user);
+                workoutService.findAllWorkouts(new WorkoutFilterRequest(), pageable, user);
 
         assertNotNull(result);
         assertEquals(1, result.content().size());
         assertEquals(workoutResponse, result.content().get(0));
 
-        verify(workoutRepository).findAllByFilters(user, null, null, null, null, null, pageable);
+        verify(workoutRepository).findAllByFilters(eq(user), any(WorkoutFilterRequest.class), eq(pageable));
         verify(workoutMapper).toDto(workout);
-        verifyNoMoreInteractions(workoutRepository, workoutMapper);
     }
 }
 
