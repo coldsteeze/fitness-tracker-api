@@ -11,6 +11,9 @@ import com.fitness.tracker.fitness_tracker_api.mapper.MediaPhotoMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.MediaPhotoRepository;
 import com.fitness.tracker.fitness_tracker_api.repository.WorkoutRepository;
 import com.fitness.tracker.fitness_tracker_api.service.impl.MediaPhotoServiceImpl;
+import com.fitness.tracker.fitness_tracker_api.unit.fixtures.MediaPhotoFixtures;
+import com.fitness.tracker.fitness_tracker_api.unit.fixtures.UserFixtures;
+import com.fitness.tracker.fitness_tracker_api.unit.fixtures.WorkoutFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,19 +50,10 @@ public class MediaPhotoServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setId(1L);
-
-        workout = new Workout();
-        workout.setId(1L);
-        workout.setUser(user);
-
-        mediaPhoto = new MediaPhoto();
-        mediaPhoto.setId(1L);
-        mediaPhoto.setWorkout(workout);
-
-        mediaPhotoResponse = new MediaPhotoResponse(1L, "file_name", LocalDate.now());
-
+        user = UserFixtures.user();
+        workout = WorkoutFixtures.workout(user);
+        mediaPhoto = MediaPhotoFixtures.mediaPhoto(workout);
+        mediaPhotoResponse = MediaPhotoFixtures.mediaPhotoResponse();
         fileContent = new byte[] {1,2,3};
     }
 
@@ -74,7 +67,7 @@ public class MediaPhotoServiceTest {
         MediaPhotoResponse result = mediaPhotoService.uploadPhoto(
                 workout.getId(),
                 user,
-                "file_name",
+                MediaPhotoFixtures.FILE_NAME,
                 fileContent
         );
 
@@ -86,14 +79,14 @@ public class MediaPhotoServiceTest {
     }
 
     @Test
-    void uploadPhoto_throwsEmptyFileException_whenDataIsEmpty() {
+    void uploadPhoto_throwsEmptyFileExceptionIfDataIsEmpty() {
         byte[] emptyData = new byte[0];
 
         assertThrows(EmptyFileException.class,
                 () -> mediaPhotoService.uploadPhoto(
                         workout.getId(),
                         user,
-                        "file_name",
+                        MediaPhotoFixtures.FILE_NAME,
                         emptyData
                 )
         );
@@ -106,7 +99,7 @@ public class MediaPhotoServiceTest {
                 () -> mediaPhotoService.uploadPhoto(
                         workout.getId(),
                         user,
-                        "file_name",
+                        MediaPhotoFixtures.FILE_NAME,
                         fileContent
                 ));
     }
