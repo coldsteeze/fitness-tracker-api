@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class MediaPhoto {
 
     @Id
@@ -20,8 +21,14 @@ public class MediaPhoto {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "data", nullable = false)
-    private byte[] data;
+    @Column(name = "content_type", nullable = false)
+    private String contentType;
+
+    @Column(name = "size", nullable = false)
+    private Long size;
+
+    @Column(name = "object_key", nullable = false, unique = true)
+    private String objectKey;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "workout_id", nullable = false)

@@ -9,3 +9,9 @@ jwt:
   issuer: com.fitness.tracker
   access-token-expiration-minutes: 15
   refresh-token-expiration-hours: 1
+
+minio:
+  url: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: fitness-workout-photos
