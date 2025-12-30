@@ -10,6 +10,23 @@ services:
       - "5432:5432"
     volumes:
       - fitness_postgres_data:/var/lib/postgresql
+    networks:
+      - fitness-network
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - fitness-network
 
   app:
     build: .
@@ -23,6 +40,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: fitness
     depends_on:
       - fitness_postgres
+    networks:
+      - fitness-network
 
 volumes:
   fitness_postgres_data:
+  minio_data:
+
+networks:
+  fitness-network:
+    driver: bridge

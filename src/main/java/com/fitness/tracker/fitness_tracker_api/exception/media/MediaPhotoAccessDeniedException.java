@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.media;
 
-public class MediaPhotoAccessDeniedException extends RuntimeException {
-    public MediaPhotoAccessDeniedException(String message) {
-        super(message);
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
+
+public class MediaPhotoAccessDeniedException extends AppException {
+    public MediaPhotoAccessDeniedException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

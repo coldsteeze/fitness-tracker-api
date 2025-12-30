@@ -1,7 +1,10 @@
 package com.fitness.tracker.fitness_tracker_api.exception.auth;
 
-public class UsernameAlreadyExistsException extends RuntimeException {
-    public UsernameAlreadyExistsException(String message) {
-        super(message);
+import com.fitness.tracker.fitness_tracker_api.exception.AppException;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
+
+public class UsernameAlreadyExistsException extends AppException {
+    public UsernameAlreadyExistsException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

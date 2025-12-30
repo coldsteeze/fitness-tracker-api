@@ -6,7 +6,7 @@ Backend application for tracking fitness activities. Users can log workouts, tra
 
 * JWT authentication with access and refresh tokens.
 * CRUD operations for workouts.
-* Upload and get progress photos (stored in PostgreSQL).
+* Upload and retrieve progress photos (stored in MinIO, metadata in PostgreSQL).
 * Data validation (e.g., non-empty name, past date, positive duration and calories).
 * Search with filters, sorting, and pagination.
 * Global exception handling.
@@ -22,6 +22,7 @@ Backend application for tracking fitness activities. Users can log workouts, tra
 * Swagger / OpenAPI
 * Docker & Docker Compose
 * Lombok, MapStruct
+* MinIO
 
 ## Getting Started
 
@@ -101,6 +102,7 @@ Run tests:
 ## Notes
 
 * DTOs are used to separate API and database models.
-* Progress photos are stored as binary data in PostgreSQL.
+* Progress photos are stored in MinIO object storage.
+* PostgreSQL stores only photo metadata (object key, content type, size).
 * Exception handling ensures consistent error messages.
 * `application-prod.yml` is configured for Docker deployment.

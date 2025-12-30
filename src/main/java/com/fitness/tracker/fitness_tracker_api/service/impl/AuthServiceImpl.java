@@ -6,6 +6,7 @@ import com.fitness.tracker.fitness_tracker_api.dto.request.RegisterRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.JwtResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.RefreshToken;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
+import com.fitness.tracker.fitness_tracker_api.exception.ErrorCode;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.AuthenticationProcessingException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.EmailAlreadyExistsException;
 import com.fitness.tracker.fitness_tracker_api.exception.auth.InvalidCredentialsException;
@@ -45,12 +46,12 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponse register(RegisterRequest registerRequest) {
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             log.warn("Registration failed: username {} is already taken", registerRequest.getUsername());
-            throw new UsernameAlreadyExistsException("Registration failed: username is already taken");
+            throw new UsernameAlreadyExistsException(ErrorCode.USERNAME_EXISTS);
         }
 
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             log.warn("Registration failed: email {} is already taken", registerRequest.getEmail());
-            throw new EmailAlreadyExistsException("Registration failed: email is already taken");
+            throw new EmailAlreadyExistsException(ErrorCode.EMAIL_EXISTS);
         }
 
         User user = userMapper.toEntity(registerRequest);
@@ -83,10 +84,10 @@ public class AuthServiceImpl implements AuthService {
             return refreshTokenService.generateTokens(user);
         } catch (BadCredentialsException e) {
             log.warn("Invalid login attempt for identifier: {}", loginRequest.getIdentifier());
-            throw new InvalidCredentialsException("Invalid identifier or password");
+            throw new InvalidCredentialsException(ErrorCode.INVALID_CREDENTIALS);
         } catch (Exception e) {
             log.error("Unexpected login error for identifier: {}", loginRequest.getIdentifier(), e);
-            throw new AuthenticationProcessingException("Unexpected login error: ", e);
+            throw new AuthenticationProcessingException(ErrorCode.INTERNAL_ERROR, e);
         }
     }
 

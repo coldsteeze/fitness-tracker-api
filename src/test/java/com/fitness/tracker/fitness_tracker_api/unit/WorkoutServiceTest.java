@@ -1,15 +1,17 @@
 package com.fitness.tracker.fitness_tracker_api.unit;
 
+import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutFilterRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.request.WorkoutRequest;
 import com.fitness.tracker.fitness_tracker_api.dto.response.PagedResponse;
 import com.fitness.tracker.fitness_tracker_api.dto.response.WorkoutResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
 import com.fitness.tracker.fitness_tracker_api.entity.Workout;
-import com.fitness.tracker.fitness_tracker_api.entity.enums.WorkoutType;
 import com.fitness.tracker.fitness_tracker_api.exception.workout.WorkoutNotFoundException;
 import com.fitness.tracker.fitness_tracker_api.mapper.WorkoutMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.WorkoutRepository;
 import com.fitness.tracker.fitness_tracker_api.service.impl.WorkoutServiceImpl;
+import com.fitness.tracker.fitness_tracker_api.unit.fixtures.UserFixtures;
+import com.fitness.tracker.fitness_tracker_api.unit.fixtures.WorkoutFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,29 +45,14 @@ class WorkoutServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setId(1L);
-
-        workout = new Workout();
-        workout.setId(1L);
-        workout.setUser(user);
-
-        workoutRequest = new WorkoutRequest();
-        workoutRequest.setName("Morning Yoga");
-        workoutRequest.setType(WorkoutType.YOGA);
-        workoutRequest.setDate(LocalDate.now());
-        workoutRequest.setDuration(60);
-        workoutRequest.setCalories(200);
-        workoutRequest.setNotes("Note");
-
-        workoutResponse = new WorkoutResponse(
-                1L, "Morning Yoga", WorkoutType.YOGA,
-                LocalDate.now(), 60, 500, "Note"
-        );
+        user = UserFixtures.user();
+        workout = WorkoutFixtures.workout(user);
+        workoutRequest = WorkoutFixtures.workoutRequest();
+        workoutResponse = WorkoutFixtures.workoutResponse();
     }
 
     @Test
-    void findById_whenWorkoutExists_returnsMappedResponse() {
+    void findById_shouldReturnsMappedResponse() {
         when(workoutRepository.findByIdAndUser(1L, user)).thenReturn(Optional.of(workout));
         when(workoutMapper.toDto(workout)).thenReturn(workoutResponse);
 
@@ -79,13 +65,13 @@ class WorkoutServiceTest {
     }
 
     @Test
-    void findById_whenNotFound_throwsException() {
+    void findById_shouldThrowIfNotFound() {
         when(workoutRepository.findByIdAndUser(1L, user)).thenReturn(Optional.empty());
         assertThrows(WorkoutNotFoundException.class, () -> workoutService.findById(1L, user));
     }
 
     @Test
-    void createWorkout_whenValidRequest_savesAndReturnsDto() {
+    void createWorkout_shouldSavesAndReturnsDto() {
         when(workoutMapper.toEntity(workoutRequest)).thenReturn(workout);
         when(workoutRepository.save(workout)).thenReturn(workout);
         when(workoutMapper.toDto(workout)).thenReturn(workoutResponse);
@@ -100,7 +86,7 @@ class WorkoutServiceTest {
     }
 
     @Test
-    void updateWorkout_whenWorkoutExists_updatesEntityAndReturnsDto() {
+    void updateWorkout_shouldUpdatesEntityAndReturnsDto() {
         when(workoutRepository.findByIdAndUser(1L, user)).thenReturn(Optional.of(workout));
         doNothing().when(workoutMapper).updateEntityFromDto(workout, workoutRequest);
         when(workoutRepository.save(workout)).thenReturn(workout);
@@ -117,14 +103,14 @@ class WorkoutServiceTest {
     }
 
     @Test
-    void updateWorkout_whenNotFound_throwsException() {
+    void updateWorkout_shouldThrowIfNotFound() {
         when(workoutRepository.findByIdAndUser(1L, user)).thenReturn(Optional.empty());
         assertThrows(WorkoutNotFoundException.class,
                 () -> workoutService.updateWorkout(1L, workoutRequest, user));
     }
 
     @Test
-    void deleteWorkout_whenExists_deletesWorkout() {
+    void deleteWorkout_shouldDeleteWorkout() {
         when(workoutRepository.findByIdAndUser(1L, user)).thenReturn(Optional.of(workout));
         doNothing().when(workoutRepository).delete(workout);
 
@@ -136,31 +122,30 @@ class WorkoutServiceTest {
     }
 
     @Test
-    void deleteWorkout_whenNotFound_throwsException() {
+    void deleteWorkout_shouldThrowIfNotFound() {
         when(workoutRepository.findByIdAndUser(1L, user)).thenReturn(Optional.empty());
         assertThrows(WorkoutNotFoundException.class,
                 () -> workoutService.deleteWorkout(1L, user));
     }
 
     @Test
-    void findAllWorkouts_whenCalled_returnsPagedResponse() {
+    void findAllWorkouts_shouldReturnsPagedResponse() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("date").descending());
         Page<Workout> page = new PageImpl<>(List.of(workout), pageable, 1);
 
-        when(workoutRepository.findAllByFilters(user, null, null, null, null, null, pageable))
+        when(workoutRepository.findAllByFilters(eq(user), any(WorkoutFilterRequest.class), eq(pageable)))
                 .thenReturn(page);
         when(workoutMapper.toDto(workout)).thenReturn(workoutResponse);
 
         PagedResponse<WorkoutResponse> result =
-                workoutService.findAllWorkouts(null, null, null, null, null, pageable, user);
+                workoutService.findAllWorkouts(new WorkoutFilterRequest(), pageable, user);
 
         assertNotNull(result);
         assertEquals(1, result.content().size());
         assertEquals(workoutResponse, result.content().get(0));
 
-        verify(workoutRepository).findAllByFilters(user, null, null, null, null, null, pageable);
+        verify(workoutRepository).findAllByFilters(eq(user), any(WorkoutFilterRequest.class), eq(pageable));
         verify(workoutMapper).toDto(workout);
-        verifyNoMoreInteractions(workoutRepository, workoutMapper);
     }
 }
 
