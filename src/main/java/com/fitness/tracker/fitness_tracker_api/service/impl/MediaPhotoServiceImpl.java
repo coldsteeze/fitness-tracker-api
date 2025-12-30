@@ -1,5 +1,6 @@
 package com.fitness.tracker.fitness_tracker_api.service.impl;
 
+import com.fitness.tracker.fitness_tracker_api.dto.response.MediaPhotoDownload;
 import com.fitness.tracker.fitness_tracker_api.dto.response.MediaPhotoResponse;
 import com.fitness.tracker.fitness_tracker_api.entity.MediaPhoto;
 import com.fitness.tracker.fitness_tracker_api.entity.User;
@@ -13,10 +14,14 @@ import com.fitness.tracker.fitness_tracker_api.mapper.MediaPhotoMapper;
 import com.fitness.tracker.fitness_tracker_api.repository.MediaPhotoRepository;
 import com.fitness.tracker.fitness_tracker_api.repository.WorkoutRepository;
 import com.fitness.tracker.fitness_tracker_api.service.MediaPhotoService;
+import com.fitness.tracker.fitness_tracker_api.service.MinioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,21 +31,27 @@ public class MediaPhotoServiceImpl implements MediaPhotoService {
     private final MediaPhotoRepository mediaPhotoRepository;
     private final WorkoutRepository workoutRepository;
     private final MediaPhotoMapper mediaPhotoMapper;
+    private final MinioService minioService;
 
     @Override
     @Transactional
-    public MediaPhotoResponse uploadPhoto(Long workoutId, User user, String fileName, byte[] data) {
-        if (data == null || data.length == 0) {
+    public MediaPhotoResponse uploadPhoto(Long workoutId, User user, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
             throw new EmptyFileException(ErrorCode.EMPTY_FILE);
         }
 
         Workout workout = workoutRepository.findByIdAndUser(workoutId, user)
                 .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
 
-        MediaPhoto mediaPhoto = new MediaPhoto();
-        mediaPhoto.setFileName(fileName);
-        mediaPhoto.setData(data);
-        mediaPhoto.setWorkout(workout);
+        String objectKey = minioService.upload(file);
+
+        MediaPhoto mediaPhoto = MediaPhoto.builder()
+                .fileName(file.getOriginalFilename())
+                .contentType(file.getContentType())
+                .size(file.getSize())
+                .objectKey(objectKey)
+                .workout(workout)
+                .build();
 
         mediaPhotoRepository.save(mediaPhoto);
         log.info("Media Photo has been uploaded successfully userId: {}, workoutId: {}",
@@ -51,7 +62,7 @@ public class MediaPhotoServiceImpl implements MediaPhotoService {
 
     @Override
     @Transactional(readOnly = true)
-    public MediaPhoto getPhotoById(Long id, User user) {
+    public MediaPhotoDownload getPhotoById(Long id, User user) {
         MediaPhoto mediaPhoto = mediaPhotoRepository.findById(id)
                 .orElseThrow(() -> new MediaPhotoNotFoundException(ErrorCode.MEDIA_PHOTO_NOT_FOUND));
 
@@ -60,9 +71,15 @@ public class MediaPhotoServiceImpl implements MediaPhotoService {
             throw new MediaPhotoAccessDeniedException(ErrorCode.MEDIA_PHOTO_ACCESS_DENIED);
         }
 
+        InputStream inputStream = minioService.download(mediaPhoto.getObjectKey());
+
         log.info("Media Photo has been retrieved successfully userId: {}, workoutId: {}",
                 user.getId(), workout.getId());
 
-        return mediaPhoto;
+        return new MediaPhotoDownload(
+                inputStream,
+                mediaPhoto.getContentType(),
+                mediaPhoto.getSize()
+        );
     }
 }
