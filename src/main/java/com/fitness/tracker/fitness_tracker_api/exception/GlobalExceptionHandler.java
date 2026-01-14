@@ -41,9 +41,9 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request);
     }
 
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ApiError> handleOther(Throwable ex, HttpServletRequest request) {
-        log.error("UNEXPECTED ERROR", ex);
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest request) {
+        log.error("Unexpected exception", ex);
         return buildErrorResponse(
                 ErrorCode.INTERNAL_ERROR.status,
                 ErrorCode.INTERNAL_ERROR.message,
